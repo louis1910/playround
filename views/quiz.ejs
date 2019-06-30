@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Play a Game</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+	<div class="text-center">
+		<h1 id="user">404 Not Found!!!</h1>
+		<p id="total"></p>
+		<button id="btn" class="btn btn-danger mt-5"> Action!!! </button>
+		<button id="reset" class="btn btn-primary mt-5"> Reset </button>
+		<h2 id="won" class="mt-5 mb-5"></h2>
+		<p id="reset-noti"></p>
+	</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+<script>
+	 var socket = io.connect('http://1dd35c3c.ngrok.io');
+
+	
+	let id = document.getElementById('user');
+	let winner = document.getElementById('won');
+	let noti = document.getElementById('reset-noti');
+	let total = document.getElementById('total');
+
+	let idCookie = document.cookie;
+
+	window.addEventListener('DOMContentLoaded', (event) => {
+    	id.innerHTML = 'Xin chào! <%= user %>';
+    	socket.emit('new user', parseCookie(idCookie));
+	});
+	
+	socket.on('winner', (data)=>{
+		winner.innerHTML = data;
+	});
+
+	socket.on('re-success', (data)=>{
+		alert(data);
+		winner.innerHTML = '';
+	});
+
+	socket.on('total', (data)=>{
+		total.innerHTML = "Total user: " + data;
+	});
+
+	socket.on('whenDis', (data)=>{
+		socket.emit('disconnected', data);
+	})
+
+	$(document).ready(()=>{
+
+ 		$('#btn').click(()=>{
+ 			socket.emit('click user', "<%= user %>");
+ 		});
+
+
+ 		$('#reset').click(()=>{
+ 			socket.emit('reset');
+ 		});
+ 	});
+
+
+ 	function parseCookie(data){
+ 		return data.slice(7, data.length);
+ 	}
+
+
+</script>
+</body>
+</html>

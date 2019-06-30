@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Testing</title>
+</head>
+<body>
+
+	<h1>Testing</h1>
+	<div>
+		<textarea name="something" id="data" cols="50" rows="5"></textarea>
+		<button id="btn">Send</button>
+	</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+<script>
+  var socket = io.connect('http://localhost:8080');
+
+ 	$(document).ready(()=>{
+ 		$('#btn').click(()=>{
+ 			socket.emit('all client', $('#data').val());
+			$('#data').val('');
+ 		})
+ 	});
+	
+</script>
+</body>
+</html>
